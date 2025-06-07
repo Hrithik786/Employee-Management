@@ -89,15 +89,29 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Contact Number</th>
+                <th>Marital Status</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Nationality</th>
+                <th>BloodGroup</th>
+                <th>Language</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="employee : ${employees}">
-                <td th:text="${employee.id}"></td>
+            <tr th:each="employee, stat : ${employees}">
+                <td th:text="${stat.index + 1}"></td> <!-- 1-based index -->
                 <td th:text="${employee.name}"></td>
                 <td th:text="${employee.email}"></td>
                 <td th:text="${employee.contactNum}"></td>
+                <td th:text="${employee.maritalStatus}"></td>
+                <td th:text="${employee.gender}"></td>
+                <td th:text="${employee.age}"></td>
+                <td th:text="${employee.nationality}"></td>
+                <td th:text="${employee.bloodGroup}"></td>
+                <td th:text="${#strings.listJoin(employee.language, ', ')}"></td>
+
+
                 <td class="actions">
                     <a th:href="@{'/employee/edit/' + ${employee.id}}">
                         <button class="btn">Edit</button>
