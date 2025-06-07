@@ -49,9 +49,9 @@ public class Employee {
     @Enumerated(EnumType.STRING) //By default, enums are stored as ordinal values (0, 1, 2...).
     private EmployeeStatus employeeStatus = EmployeeStatus.ACTIVE;
 
-    // @NotNull
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private MaritalStatus maritalStatus = MaritalStatus.SINGLE;
+    private MaritalStatus maritalStatus;
 
     @NotNull
     @Enumerated(EnumType.STRING)
