@@ -1,7 +1,5 @@
 package com.mediquity.employee.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.mediquity.employee.bean.Employee;
+import com.mediquity.employee.dto.EmployeeDTO;
 import com.mediquity.employee.service.EmployeeService;
 
 import jakarta.validation.Valid;
@@ -26,8 +25,7 @@ public class EmployeeController {
 
     @GetMapping("/home")
     public String showAllEmployees(Model model) {
-        List<Employee> employees = employeeService.getAllEmployee();
-        model.addAttribute("employees", employees);
+        model.addAttribute("employees", employeeService.getAllEmployee());
         return "home"; // View: home.html
     }
 
@@ -44,25 +42,23 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee")
-    public String createEmp(@ModelAttribute("employee") @Valid Employee emp,
-                            BindingResult result,
-                            Model model) {
+    public String createEmp(@ModelAttribute("employee") @Valid EmployeeDTO emp,
+                            BindingResult result) {
         if (result.hasErrors()) {
             return "add-employee-form";
         }
         employeeService.saveEmp(emp);
-        model.addAttribute("employees", employeeService.getAllEmployee());
         return "redirect:/home";
     }
 
     @PostMapping("/employee/update/{id}")
     public String updateEmployee(@PathVariable("id") int id,
-                                 @ModelAttribute("employee") @Valid Employee emp,
+                                 @ModelAttribute("employee") @Valid EmployeeDTO emp,
                                  BindingResult result) {
         if (result.hasErrors()) {
             return "edit-employee-form";
         }
-        emp.setId(id);
+        // emp.setId(id);
         employeeService.saveEmp(emp);
         return "redirect:/home";
     }

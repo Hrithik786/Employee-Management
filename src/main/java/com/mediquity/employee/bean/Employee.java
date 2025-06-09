@@ -2,8 +2,6 @@ package com.mediquity.employee.bean;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.mediquity.employee.enums.BloodGroup;
 import com.mediquity.employee.enums.EmployeeStatus;
 import com.mediquity.employee.enums.Gender;
@@ -30,47 +28,31 @@ import jakarta.validation.constraints.Pattern;
 @Entity(name="employee")
 public class Employee {
 
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
     private String name;
-    
-    @Email
     private String email;
-
-    @NotBlank
-    @Pattern(regexp = "\\d{10}", message = "Must be a 10-digit number")
     private String contactNum;
 
-    // @NotNull
     @Enumerated(EnumType.STRING) //By default, enums are stored as ordinal values (0, 1, 2...).
     private EmployeeStatus employeeStatus = EmployeeStatus.ACTIVE;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private MaritalStatus maritalStatus;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotNull
-    @Min(18)
-    @Max(65)
     private int age;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Nationality nationality;
 
     @Enumerated(EnumType.STRING)
-    @Value("UNKNOWN")
     private BloodGroup bloodGroup;
 
-    @NotNull
     @ElementCollection(targetClass = Language.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "employee_languages")
