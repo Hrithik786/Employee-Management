@@ -11,13 +11,13 @@ import com.mediquity.employee.dto.EmployeeDTO;
 public class EmployeeMapper {
 
     @Autowired
-    private static ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
-    public static EmployeeDTO convertToDto(Employee employee) {
+    public EmployeeDTO convertToDto(Employee employee) {
         return modelMapper.map(employee, EmployeeDTO.class);
     }
 
-    public static Employee convertToEntity(EmployeeDTO dto) {
+    public Employee convertToEntity(EmployeeDTO dto) {
         return modelMapper.map(dto, Employee.class);
     }
 }

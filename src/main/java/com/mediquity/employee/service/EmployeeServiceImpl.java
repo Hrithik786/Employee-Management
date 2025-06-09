@@ -1,16 +1,19 @@
 package com.mediquity.employee.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mediquity.employee.bean.Employee;
+import com.mediquity.employee.config.EmployeeMapper;
 import com.mediquity.employee.dto.EmployeeDTO;
-import com.mediquity.employee.exception.ResourceNotFoundException;
+import com.mediquity.employee.enums.EmployeeStatus;
 import com.mediquity.employee.repository.EmployeeRepo;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
@@ -19,50 +22,49 @@ public class EmployeeServiceImpl implements EmployeeService{
     private final EmployeeRepo employeeRepo;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private EmployeeMapper employeeMapper;
 
     // Spring automatically injects this
     public EmployeeServiceImpl(EmployeeRepo employeeRepo) {
         this.employeeRepo = employeeRepo;
     }
 
-    public EmployeeDTO convertToDto(Employee employee) {
-        return modelMapper.map(employee, EmployeeDTO.class);
-    }
-
-    public Employee convertToEntity(EmployeeDTO dto) {
-        return modelMapper.map(dto, Employee.class);
+    @Override
+    public List<EmployeeDTO> getAllEmployee() {
+        List<Employee> employees = employeeRepo.findAll();
+        return employees.stream()
+        .filter(emp ->  emp.getEmployeeStatus() == null || emp.getEmployeeStatus() == EmployeeStatus.ACTIVE)
+        .map(employeeMapper::convertToDto)
+        .collect(Collectors.toList());
     }
 
     @Override
-    public List<Employee> getAllEmployee() {
-        return employeeRepo.findAll();
-    }
-    
-    @Override
-    public Employee getEmpById(int id) {
-        return employeeRepo.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("Employee not found with ID: " + id)
+    public EmployeeDTO getEmpById(int id) {
+        return employeeMapper.convertToDto(employeeRepo.findById(id)
+        .orElseThrow(() -> new RuntimeException("Employee not found with ID: " + id))
         );
     }
 
     @Override
     public Employee saveEmp(EmployeeDTO employee) {
-        return employeeRepo.saveAndFlush(this.convertToEntity(employee));
+        return employeeRepo.saveAndFlush(employeeMapper.convertToEntity(employee));
     }
 
     @Override
     public String deleteEmp(int id) {
-        boolean isDeleted=false;
-        if (id == '0') {
-            return "ID/email is 0 we can't delete it";
-        }
-        if (!isDeleted) {
-            employeeRepo.deleteById(id);
-            isDeleted = true;
+        Optional<Employee> optionalEmp = employeeRepo.findById(id);
+        if (optionalEmp.isPresent()) {
+            Employee employee = optionalEmp.get();
+            employee.setEmployeeStatus(EmployeeStatus.INACTIVE);
+            employeeRepo.save(employee);
             return "deleted_successfully";
+        } else {
+            throw new EntityNotFoundException("Employee with ID " + id + " not found.");
         }
-        return "not_deleted";
     }
-    
+
+    @Override
+    public void updateEmp(EmployeeDTO emp) {
+        employeeRepo.saveAndFlush(employeeMapper.convertToEntity(emp));
+    }
 }

@@ -56,10 +56,11 @@ public class EmployeeController {
                                  @ModelAttribute("employee") @Valid EmployeeDTO emp,
                                  BindingResult result) {
         if (result.hasErrors()) {
+            System.out.println(result);
             return "edit-employee-form";
         }
-        // emp.setId(id);
-        employeeService.saveEmp(emp);
+        emp.setId(id);
+        employeeService.updateEmp(emp);
         return "redirect:/home";
     }
     @PostMapping("/employee/delete/{id}")

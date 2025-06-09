@@ -7,8 +7,9 @@ import com.mediquity.employee.dto.EmployeeDTO;
 
 public interface EmployeeService {
     
-    List<Employee> getAllEmployee();
-    Employee getEmpById(int id);
+    List<EmployeeDTO> getAllEmployee();
+    EmployeeDTO getEmpById(int id);
     Employee saveEmp(EmployeeDTO emp);
     String deleteEmp(int id);
+    void updateEmp(EmployeeDTO emp);
 }
