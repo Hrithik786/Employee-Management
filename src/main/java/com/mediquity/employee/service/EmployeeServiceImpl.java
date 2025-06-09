@@ -47,8 +47,8 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee saveEmp(Employee employee) {
-        return employeeRepo.saveAndFlush(employee);
+    public Employee saveEmp(EmployeeDTO employee) {
+        return employeeRepo.saveAndFlush(this.convertToEntity(employee));
     }
 
     @Override
